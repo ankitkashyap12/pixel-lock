@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
-    id("org.jetbrains.kotlin.android")
+//    id("org.jetbrains.kotlin.android")
+    kotlin("android")
 }
 
 android {
@@ -50,6 +51,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.5")
     implementation("androidx.datastore:datastore-preferences:1.0.0")
     implementation ("androidx.preference:preference-ktx:1.2.0")
+    // Add this for BiometricPrompt
+    implementation(libs.androidx.biometric.ktx.v120alpha05) // Or latest stable version (uses -ktx for coroutine support)
 
 
 }

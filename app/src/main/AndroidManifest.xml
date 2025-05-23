@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pixel.applock">
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
 
     <application
         android:allowBackup="true"
@@ -20,7 +22,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".SecuritySetupActivity" />
+        <activity android:name=".ui.AppSelectionActivity" />
+
 
     </application>
+    <queries>
+        <!-- To query all apps with launcher intent -->
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+
+        <!-- (Optional) To query specific packages you want -->
+        <!--
+        <package android:name="com.google.android.gm" />
+        <package android:name="com.android.vending" />
+        -->
+    </queries>
+
 
 </manifest>
