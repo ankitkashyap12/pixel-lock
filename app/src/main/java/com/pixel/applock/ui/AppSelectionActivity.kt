@@ -30,7 +30,7 @@ class AppSelectionActivity : ComponentActivity() {
         val resolveInfos = pm.queryIntentActivities(intent, 0)
 
         val apps = resolveInfos.mapNotNull { resolveInfo ->
-            val appInfo = resolveInfo.activityInfo.applicationInfo
+            resolveInfo.activityInfo.applicationInfo
             val appName = resolveInfo.loadLabel(pm).toString()
             val packageName = resolveInfo.activityInfo.packageName
             val icon = resolveInfo.loadIcon(pm)
@@ -40,8 +40,9 @@ class AppSelectionActivity : ComponentActivity() {
         setContent {
             PixelAppLockTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
-                    AppSelectionScreen(apps = apps, onSave = {
-                        AppLockPrefs.setLockedApps(this, it)
+                    val lockedApps = remember { AppLockPrefs.getLockedApps(this@AppSelectionActivity) }
+                    AppSelectionScreen(apps = apps, initialSelectedApps = lockedApps, onSave = {
+                        AppLockPrefs.saveLockedApps(this@AppSelectionActivity, it)
                         finish()
                     })
                 }
@@ -51,8 +52,8 @@ class AppSelectionActivity : ComponentActivity() {
 }
 
 @Composable
-fun AppSelectionScreen(apps: List<AppInfo>, onSave: (Set<String>) -> Unit) {
-    val selectedApps = remember { mutableStateListOf<String>() }
+fun AppSelectionScreen(apps: List<AppInfo>, initialSelectedApps: Set<String> = emptySet(), onSave: (Set<String>) -> Unit) {
+    val selectedApps = remember { mutableStateListOf<String>().apply { addAll(initialSelectedApps) } }
 
     Column(modifier = Modifier.padding(16.dp)) {
         Text("Select apps to lock", style = MaterialTheme.typography.headlineSmall)

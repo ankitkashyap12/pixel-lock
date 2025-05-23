@@ -2,8 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.pixel.applock">
+
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
-    <uses-permission android:name="android.permission.PACKAGE_USAGE_STATS" tools:ignore="ProtectedPermissions" />
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.USAGE_STATS" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <application
         android:allowBackup="true"
@@ -13,9 +19,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        tools:ignore="ForegroundServicePermission"
         tools:targetApi="31">
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,6 +32,12 @@
         </activity>
         <activity android:name=".SecuritySetupActivity" />
         <activity android:name=".ui.AppSelectionActivity" />
+
+        <service
+            android:name=".service.AppMonitorService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="specialUse" />
 
 
     </application>
@@ -34,11 +48,6 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent>
 
-        <!-- (Optional) To query specific packages you want -->
-        <!--
-        <package android:name="com.google.android.gm" />
-        <package android:name="com.android.vending" />
-        -->
     </queries>
 
 

@@ -3,44 +3,43 @@ package com.pixel.applock
 import android.content.Context
 
 object AppLockPrefs {
-    private const val PREFS_NAME = "AppLockPrefs"
-    private const val LOCKED_APPS_KEY = "LockedApps"
-    private const val PIN_KEY = "Pin"
+    private const val PREFS_NAME = "app_lock_prefs"
+    private const val KEY_PIN = "user_pin"
+    private const val KEY_LOCKED_APPS = "locked_apps"
+
+    fun savePin(context: Context, pin: String) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putString(KEY_PIN, pin).apply()
+    }
+
+    fun getPin(context: Context): String? {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        return prefs.getString(KEY_PIN, null)
+    }
+
+    fun saveLockedApps(context: Context, lockedApps: Set<String>) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putStringSet(KEY_LOCKED_APPS, lockedApps).apply()
+    }
 
     fun getLockedApps(context: Context): Set<String> {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getStringSet(LOCKED_APPS_KEY, emptySet()) ?: emptySet()
-    }
-
-    fun setLockedApps(context: Context, apps: Set<String>) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putStringSet(LOCKED_APPS_KEY, apps).apply()
-    }
-
-    fun addLockedApp(context: Context, packageName: String) {
-        val lockedApps = getLockedApps(context).toMutableSet()
-        lockedApps.add(packageName)
-        setLockedApps(context, lockedApps)
-    }
-
-    fun removeLockedApp(context: Context, packageName: String) {
-        val lockedApps = getLockedApps(context).toMutableSet()
-        lockedApps.remove(packageName)
-        setLockedApps(context, lockedApps)
+        return prefs.getStringSet(KEY_LOCKED_APPS, emptySet()) ?: emptySet()
     }
 
     fun isAppLocked(context: Context, packageName: String): Boolean {
         return getLockedApps(context).contains(packageName)
     }
 
-    // PIN save/load helpers
-    fun savePin(context: Context, pin: String) {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        prefs.edit().putString(PIN_KEY, pin).apply()
+    fun lockApp(context: Context, packageName: String) {
+        val lockedApps = getLockedApps(context).toMutableSet()
+        lockedApps.add(packageName)
+        saveLockedApps(context, lockedApps)
     }
 
-    fun getPin(context: Context): String? {
-        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
-        return prefs.getString(PIN_KEY, null)
+    fun unlockApp(context: Context, packageName: String) {
+        val lockedApps = getLockedApps(context).toMutableSet()
+        lockedApps.remove(packageName)
+        saveLockedApps(context, lockedApps)
     }
 }
